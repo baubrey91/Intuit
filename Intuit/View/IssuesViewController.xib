@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="IssuesViewController" customModule="Intuit" customModuleProvider="target">
+            <connections>
+                <outlet property="tableView" destination="Ugd-ZW-DHc" id="imn-0L-PiH"/>
+                <outlet property="view" destination="iN0-l3-epB" id="pdi-va-v4G"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7uj-gs-nSt">
+                    <rect key="frame" x="0.0" y="180" width="414" height="716"/>
+                    <subviews>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Ugd-ZW-DHc">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="674"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <outlet property="dataSource" destination="-1" id="6RN-NC-hQz"/>
+                                <outlet property="delegate" destination="-1" id="Ljv-e4-VnC"/>
+                            </connections>
+                        </tableView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="Ugd-ZW-DHc" firstAttribute="leading" secondItem="7uj-gs-nSt" secondAttribute="leading" id="5mI-lQ-Bdb"/>
+                        <constraint firstAttribute="bottom" secondItem="Ugd-ZW-DHc" secondAttribute="bottom" constant="42" id="DHR-tG-yHH"/>
+                        <constraint firstAttribute="trailing" secondItem="Ugd-ZW-DHc" secondAttribute="trailing" id="hzI-i7-FZ9"/>
+                        <constraint firstItem="Ugd-ZW-DHc" firstAttribute="top" secondItem="7uj-gs-nSt" secondAttribute="top" id="qKj-LF-4ed"/>
+                    </constraints>
+                </view>
+                <view alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nOS-gy-nRs">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="180"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <gestureRecognizers/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="180" id="AdJ-pI-Bb6"/>
+                    </constraints>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="LyH-4e-JJy" appends="YES" id="lve-Iw-ptu"/>
+                    </connections>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <gestureRecognizers/>
+            <constraints>
+                <constraint firstItem="nOS-gy-nRs" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="42R-qa-pjW"/>
+                <constraint firstAttribute="bottom" secondItem="7uj-gs-nSt" secondAttribute="bottom" id="9PK-t0-g5U"/>
+                <constraint firstItem="7uj-gs-nSt" firstAttribute="top" secondItem="nOS-gy-nRs" secondAttribute="bottom" id="BTe-cO-bmF"/>
+                <constraint firstItem="7uj-gs-nSt" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="FxJ-ZW-rbI"/>
+                <constraint firstItem="nOS-gy-nRs" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="Gc7-4K-v3Q"/>
+                <constraint firstItem="nOS-gy-nRs" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="MHl-50-AKy"/>
+                <constraint firstItem="7uj-gs-nSt" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="dxF-a0-a7k"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outletCollection property="gestureRecognizers" destination="CE0-Lc-1pl" appends="YES" id="eiA-fz-eeb"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="106.47321428571428"/>
+        </view>
+        <tapGestureRecognizer id="LyH-4e-JJy">
+            <connections>
+                <action selector="tapToDismiss:" destination="-1" id="SZT-fD-YD1"/>
+            </connections>
+        </tapGestureRecognizer>
+        <swipeGestureRecognizer direction="down" id="CE0-Lc-1pl">
+            <connections>
+                <action selector="swipeToDismiss:" destination="-1" id="HYh-Xv-K6j"/>
+            </connections>
+        </swipeGestureRecognizer>
+    </objects>
+</document>

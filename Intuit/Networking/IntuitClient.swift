@@ -2,11 +2,13 @@ import Foundation
 import UIKit
 
 enum urlError: Error {
-    case badURL
+    case badRequst
 }
 
-public protocol IntuitAPI {
+protocol IntuitAPI {
     func getIntuitRepo(completion: @escaping (Result<[Repo], Error>) -> Void)
+    func getIssues(for repo: String, completion: @escaping (Result<[Issue], Error>) -> Void)
+    func getAvatarImage(with imagePath: String, completion: @escaping (Result<UIImage?, Error>) -> Void)
 }
 
 class IntuitClient: IntuitAPI {
@@ -17,21 +19,23 @@ class IntuitClient: IntuitAPI {
     }
     
     func getIntuitRepo(completion: @escaping (Result<[Repo], Error>) -> Void) {
-        guard let request = movieRequest() else {
+        #if OFFLINE
+        return callJSONFile(completion: completion)
+        #endif
+        guard let request = GitHubRequest(endpoint: .repos) else {
             DispatchQueue.global().async {
                 //Bad URL
                 //RENAME
-                completion(.failure(urlError.badURL))
+                completion(.failure(urlError.badRequst))
             }
             return
         }
+        
         service.get(request: request) { (result: Result<Data, Error>) in
             do {
                 switch result {
                 case .success(let data):
-                    print(data)
-                    let jsonData = try JSONSerialization.jsonObject(with: data, options: []) as! [NSDictionary]
-                    let repos = jsonData.map { Repo(json: $0) }
+                    let repos = try JSONDecoder().decode([Repo].self, from: data)
                     completion(.success(repos))
                 case .failure(let error):
                     completion(.failure(error))
@@ -42,44 +46,62 @@ class IntuitClient: IntuitAPI {
         }
     }
     
-//    func getIntuitRepo(completion: @escaping (Result<String>) -> Void) {
-//        guard let request = movieRequest(movieId: movieId) else {
-//            DispatchQueue.global().async {
-//                completion(Result.error(ServiceError.requestError))
-//            }
-//            return
-//        }
-//        service.get(request: request) { (result: Result<Data>) in
-//            do {
-//                switch result {
-//                case .result(let data):
-//                    let jsonData = try JSONSerialization.jsonObject(with: data, options: []) as! NSDictionary
-//                    let movie = Movie(json: jsonData)
-//                    completion(Result.result(movie))
-//                case .error(let error):
-//                    completion(Result.error(error))
-//                }
-//            } catch {
-//                completion(Result.error(ServiceError.invalidData))
-//            }
-//        }
-//    }
+    func getIssues(for repo: String, completion: @escaping (Result<[Issue], Error>) -> Void) {
+//        #if OFFLINE
+//        //differentJSONFILE
+//        return callJSONFile(completion: completion)
+//        #endif
+
+        guard let request = GitHubRequest(endpoint: .issues(repo: repo)) else {
+            DispatchQueue.global().async {
+                completion(.failure(urlError.badRequst))
+            }
+            return
+        }
+        service.get(request: request) { (result: Result<Data, Error>) in
+            do {
+                switch result {
+                case .success(let data):
+                    let issues = try JSONDecoder().decode([Issue].self, from: data)
+                    completion(.success(issues))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            } catch {
+                completion(.failure(ServiceError.invalidData))
+            }
+        }
+    }
+
     
-//    func getMovieImage(imagePath: String, completion: @escaping (Result<UIImage?>) -> Void) {
-//        guard let request = movieImageRequest(imagePath: imagePath) else {
-//            DispatchQueue.global().async {
-//                completion(Result.error(ServiceError.requestError))
-//            }
-//            return
-//        }
-//        service.get(request: request) { (result: Result<Data>) in
-//            switch result {
-//            case .result(let data):
-//                let image = UIImage(data: data)!
-//                completion(Result.result(image))
-//            case .error(let error):
-//                completion(Result.error(error))
-//            }
-//        }
-//    }
+    func getAvatarImage(with imagePath: String, completion: @escaping (Result<UIImage?, Error>) -> Void) {
+        guard let request = AvatarImageRequest(imagePath: imagePath) else {
+            DispatchQueue.global().async {
+                completion(Result.failure(ServiceError.requestError))
+            }
+            return
+        }
+        service.get(request: request) { (result: Result<Data, Error>) in
+            switch result {
+            case .success(let data):
+                // TODO: - Remove force unwrap
+                let image = UIImage(data: data)!
+                completion(.success(image))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+}
+
+//Offline mode
+extension IntuitClient {
+    //Used only for working on project offline.
+    private func callJSONFile(completion: @escaping (Result<[Repo], Error>) -> Void) {
+        //I am force unwrapping only because none of this should go to production. This is for just working offline
+        let fileUrl: NSURL = Bundle.main.url(forResource: "mockJSONFile", withExtension: "json")! as NSURL
+        let data: Data = try! Data(contentsOf: fileUrl as URL)
+        let repos = try! JSONDecoder().decode([Repo].self, from: data)
+        completion(.success(repos))
+    }
 }
